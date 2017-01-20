@@ -1,7 +1,8 @@
 var camera, scene, renderer, fog;
 var effect, controls;
 var element, container;
-var hudmesh;
+
+var hudGroup, hudIconMesh;
 
 var clock = new THREE.Clock();
 
@@ -10,19 +11,33 @@ var STEREO = true;
 init();
 animate();
 
+function setOrientationControls(e) {
+  if (!e.alpha) {
+    return;
+  }
+
+  controls = new THREE.DeviceOrientationControls(camera, true);
+  controls.connect();
+  controls.update();
+
+  element.addEventListener('click', fullscreen, false);
+
+  window.removeEventListener('deviceorientation', setOrientationControls, true);
+}
+
 function init() {
   renderer = new THREE.WebGLRenderer();
   element = renderer.domElement;
   container = document.getElementById('example');
   container.appendChild(element);
 
+  scene = new THREE.Scene();
+
+  /** Camera and controls **/
+
   if (STEREO) {
     effect = new THREE.StereoEffect(renderer);
   }
-
-  scene = new THREE.Scene();
-  fog = new THREE.Fog(0x00000);
-  scene.add(fog);
 
   camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
   camera.position.set(0, 10, 0);
@@ -38,23 +53,17 @@ function init() {
   controls.noZoom = true;
   controls.noPan = true;
 
-  function setOrientationControls(e) {
-    if (!e.alpha) {
-      return;
-    }
-
-    controls = new THREE.DeviceOrientationControls(camera, true);
-    controls.connect();
-    controls.update();
-
-    element.addEventListener('click', fullscreen, false);
-
-    window.removeEventListener('deviceorientation', setOrientationControls, true);
-  }
   window.addEventListener('deviceorientation', setOrientationControls, true);
+
+  /** Lights and fog **/
 
   var light = new THREE.HemisphereLight(0x777777, 0x000000, 0.6);
   scene.add(light);
+
+  fog = new THREE.Fog(0x00000);
+  scene.add(fog);
+
+  /** Plane / horizon **/
 
   var texture = THREE.ImageUtils.loadTexture(
     'textures/patterns/dots.png'
@@ -75,6 +84,8 @@ function init() {
   mesh.rotation.x = -Math.PI / 2;
   scene.add(mesh);
 
+  /** Rotation mesh **/
+
   var hudGeo = new THREE.SphereGeometry( 30, 40, 40 );
   var hudTexture = THREE.ImageUtils.loadTexture(
     'textures/patterns/dots.png'
@@ -90,7 +101,34 @@ function init() {
     side: THREE.BackSide
   });
   hudMesh = new THREE.Mesh(hudGeo, hudMaterial);
-  scene.add(hudMesh)
+  scene.add(hudMesh);
+
+  /** UI **/
+
+  hudGroup = new THREE.Object3D(0, 0, 0);
+
+  var hudIconTexture = new THREE.ImageUtils.loadTexture(
+    'textures/icons/warning.png'
+  );
+  var hudIconGeo = new THREE.PlaneGeometry(0.5, 0.5);
+  hudIconTexture.wrapS = THREE.RepeatWrapping;
+  hudIconTexture.wrapT = THREE.RepeatWrapping;
+  hudIconTexture.anisotropy = renderer.getMaxAnisotropy();
+  var hudIconMaterial = new THREE.MeshBasicMaterial({
+    shading: THREE.FlatShading,
+    transparent: true,
+    map: hudIconTexture
+  });
+  hudIconMesh = new THREE.Mesh(hudIconGeo, hudIconMaterial);
+  hudIconMesh.position.set(-4, -2, -6);
+  hudGroup.add(hudIconMesh);
+
+  console.log(hudIconMesh);
+
+  scene.add(hudGroup);
+  hudGroup.position.copy(camera.position);
+
+  /** Listeners **/
 
   window.addEventListener('resize', resize, false);
   setTimeout(resize, 1);
@@ -113,6 +151,11 @@ function update(dt) {
   camera.position.set(Math.sin(Date.now() * 0.0005) * 10, 10, Math.sin(Date.now() * 0.001) * 20);
   hudMesh.position.copy(camera.position);
   hudMesh.position.y = camera.position.y - 25;
+
+  hudGroup.position.copy(camera.position);
+  hudGroup.rotation.copy(camera.rotation);
+
+  hudIconMesh.material.opacity = Math.abs(Math.sin(Date.now() * 0.001));
 
   camera.updateProjectionMatrix();
 
