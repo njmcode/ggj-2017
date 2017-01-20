@@ -1,0 +1,16 @@
+{
+    "name": "-client",
+    "version": "0.0.1",
+    "description": "",
+    "author": "",
+    "scripts": {
+        "build": "webpack -d",
+        "watch": "webpack -d -w --progress --colors"
+    },
+    "license": "MIT",
+    "dependencies": {},
+    "devDependencies": {
+        "webpack": "^1.14.0",
+        "webpack-dev-server": "^1.16.2"
+    }
+}

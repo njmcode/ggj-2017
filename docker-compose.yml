@@ -1,0 +1,17 @@
+visor:
+    image: node:7-alpine
+    volumes:
+        - ./client:/src
+        - ./shared:/shared
+    working_dir: /src
+    command: make watch
+
+screen:
+    image: node:7-alpine
+    volumes:
+        - ./server:/src
+        - ./shared:/shared
+    ports:
+        - 0.0.0.0:5005:5005
+    working_dir: /src
+    command: make run
