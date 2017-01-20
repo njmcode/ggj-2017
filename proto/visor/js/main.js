@@ -81,7 +81,7 @@ function init() {
   );
   hudTexture.wrapS = THREE.RepeatWrapping;
   hudTexture.wrapT = THREE.RepeatWrapping;
-  hudTexture.repeat = new THREE.Vector2(20, 20);
+  hudTexture.repeat = new THREE.Vector2(60, 60);
   hudTexture.anisotropy = renderer.getMaxAnisotropy();
   var hudMaterial = new THREE.MeshBasicMaterial({
     shading: THREE.FlatShading,
@@ -91,7 +91,6 @@ function init() {
   });
   hudMesh = new THREE.Mesh(hudGeo, hudMaterial);
   scene.add(hudMesh)
-  hudMesh.position.set(camera.position.x, camera.position.y, camera.position.z);
 
   window.addEventListener('resize', resize, false);
   setTimeout(resize, 1);
@@ -113,6 +112,7 @@ function update(dt) {
 
   camera.position.set(Math.sin(Date.now() * 0.0005) * 10, 10, Math.sin(Date.now() * 0.001) * 20);
   hudMesh.position.copy(camera.position);
+  hudMesh.position.y = camera.position.y - 25;
 
   camera.updateProjectionMatrix();
 
