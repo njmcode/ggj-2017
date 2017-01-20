@@ -1,10 +1,11 @@
 var camera, scene, renderer, fog;
 var effect, controls;
 var element, container;
+var hudmesh;
 
 var clock = new THREE.Clock();
 
-var STEREO = false;
+var STEREO = true;
 
 init();
 animate();
@@ -32,7 +33,7 @@ function init() {
   controls.target.set(
     camera.position.x + 0.1,
     camera.position.y,
-    camera.position.z
+    camera.position.z + 100
   );
   controls.noZoom = true;
   controls.noPan = true;
@@ -60,7 +61,7 @@ function init() {
   );
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
-  texture.repeat = new THREE.Vector2(200, 200);
+  texture.repeat = new THREE.Vector2(250, 250);
   texture.anisotropy = renderer.getMaxAnisotropy();
 
   var material = new THREE.MeshBasicMaterial({
@@ -73,6 +74,24 @@ function init() {
   var mesh = new THREE.Mesh(geometry, material);
   mesh.rotation.x = -Math.PI / 2;
   scene.add(mesh);
+
+  var hudGeo = new THREE.SphereGeometry( 30, 40, 40 );
+  var hudTexture = THREE.ImageUtils.loadTexture(
+    'textures/patterns/dots.png'
+  );
+  hudTexture.wrapS = THREE.RepeatWrapping;
+  hudTexture.wrapT = THREE.RepeatWrapping;
+  hudTexture.repeat = new THREE.Vector2(20, 20);
+  hudTexture.anisotropy = renderer.getMaxAnisotropy();
+  var hudMaterial = new THREE.MeshBasicMaterial({
+    shading: THREE.FlatShading,
+    transparent: true,
+    map: hudTexture,
+    side: THREE.BackSide
+  });
+  hudMesh = new THREE.Mesh(hudGeo, hudMaterial);
+  scene.add(hudMesh)
+  hudMesh.position.set(camera.position.x, camera.position.y, camera.position.z);
 
   window.addEventListener('resize', resize, false);
   setTimeout(resize, 1);
@@ -91,6 +110,9 @@ function resize() {
 
 function update(dt) {
   resize();
+
+  camera.position.set(Math.sin(Date.now() * 0.0005) * 10, 10, Math.sin(Date.now() * 0.001) * 20);
+  hudMesh.position.copy(camera.position);
 
   camera.updateProjectionMatrix();
 
