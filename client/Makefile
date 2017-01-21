@@ -5,5 +5,5 @@ install:
 build: install
 	npm run build
 
-watch: install
-	npm run watch
+run: build
+	npm run server

@@ -3,8 +3,10 @@ visor:
     volumes:
         - ./client:/src
         - ./shared:/shared
+    ports:
+        - 0.0.0.0:8000:8000
     working_dir: /src
-    command: make watch
+    command: make run
 
 screen:
     image: node:7
