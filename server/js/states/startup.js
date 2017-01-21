@@ -34,14 +34,13 @@ StartupState.prototype.preload = function() {
 };
 
 StartupState.prototype.create = function() {
-  console.log('STARTUPSTATE CREATE');
     var self = this;
     if (window.location.hash) {
+        console.log('LOCATION HASH', window.location.hash.substr(1));
         self.game.state.start(window.location.hash.substr(1));
     } else {
         self.game.state.start(CONFIG.stateAfterStartup);
     }
-    self.game.state.start(CONFIG.stateAfterStartup);
 };
 
 module.exports = StartupState;

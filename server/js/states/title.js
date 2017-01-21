@@ -5,22 +5,21 @@
 'use strict';
 
 var CONFIG = require('../config');
+var STRINGS = require('../strings');
 var _common = require('./_common');
 
 var TitleState = function() {};
 
 TitleState.prototype.preload = function() {
     _common.setGameScale(this.game);
-    console.log('TITLESTATE PRELOAD');
 };
 
 TitleState.prototype.create = function() {
-  console.log('Fuckin shazam');
 
   var state = this;
 
-  // Water filter
-  //  From http://glslsandbox.com/e#16153.0
+  // Water background
+  // Taken from Phaser FILTERS examples page
 
   var fragmentSrc = [
 
@@ -65,7 +64,6 @@ TitleState.prototype.create = function() {
 
   state.waterFilter = new Phaser.Filter(state.game, null, fragmentSrc);
   state.waterFilter.setResolution(800, 500);
-
   var waterBG = state.add.sprite()
   waterBG.width = 800;
   waterBG.height = 500;
@@ -79,9 +77,16 @@ TitleState.prototype.create = function() {
   // Connection status text
   state.conStatusText = state.add.text(
         400, 400,
-        'Waiting for VISOR to connect...',
-        CONFIG.font.smallStyle);
+        STRINGS['title.awaitingVisor'],
+        CONFIG.font.baseStyle);
   state.conStatusText.anchor.set(0.5);
+
+  // Credits footer
+  state.footerText = state.add.text(
+    400, 480,
+    STRINGS['title.creditFooter'],
+    CONFIG.font.smallStyle);
+  state.footerText.anchor.set(0.5);
 };
 
 
@@ -89,6 +94,7 @@ TitleState.prototype.update = function() {
   var state = this;
 
   state.waterFilter.update();
+  state.conStatusText.alpha = Math.abs(Math.sin(Date.now() * 0.005));
 };
 
 module.exports = TitleState;

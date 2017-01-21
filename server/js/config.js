@@ -21,7 +21,7 @@ var CONFIG = {
     font: {
         baseStyle: {
             font: '24px VT323',
-            fill: '#caa',
+            fill: '#4fcfc9',
             stroke: '#000',
             strokeThickness: 1,
             align: 'center'
