@@ -4,6 +4,7 @@
  * Configuration object used across the app.
  */
 
+
 var CONFIG = {
     debug: {
         enabled: true
@@ -13,8 +14,8 @@ var CONFIG = {
 
     // Pixel size of the Phaser canvas
     gameSize: {
-        width: 600,
-        height: 400
+        width: 800,
+        height: 500
     },
 
     font: {
@@ -27,7 +28,7 @@ var CONFIG = {
         },
         smallStyle: {
             font: '18px VT323',
-            fill: '#caa',
+            fill: '#01a6d0',
             stroke: '#000',
             strokeThickness: 1,
             align: 'center'
