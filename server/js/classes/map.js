@@ -17,6 +17,7 @@ var Map = function( width, height, roomsize ) {
     this.yRange = height / roomsize;
     this.rooms = [];
     this.hasExit = false;
+    this.startRoom;
     
     this.initRooms();
     this.initPath();
@@ -57,6 +58,7 @@ Map.prototype.initPath = function() {
     var theMap = this;
     path.push(this.rooms[Util.randomInt(this.yRange)]);
     path[0].isStart = true;
+    theMap.startRoom = path[0];
     
     var generatePath = function() {
         var direction = ( Util.randomInt(2) ) ? 'N' : 'S';
