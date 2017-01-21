@@ -1,0 +1,116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="theme-color" content="#2c0c3f"/>
+    <link rel="icon" type="image/png" href="/static/img/favicon.png"/>
+    <link rel='apple-touch-icon-precomposed' href="/static/img/favicon.png" />
+    <meta name="keywords" content="fathom, global game jam, 2017, ggj" />
+    <meta name="description" content="" />
+    <meta name="referrer" content="always" />
+
+    <!-- facebook metadata -->
+    <meta property="og:description" content="" />
+    <meta property="og:title" content="Fathom - a Global Game Jam game" />
+    <meta property="og:image" content="" />
+    <meta property="og:image:width" content="200" />
+    <meta property="og:image:height" content="200" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="" />
+    <meta property="og:site_name" content="fathom">
+
+    <!-- twitter metadata -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:site" content="fathom" />
+    <meta name="twitter:title" content="Fathom - a Global Game Jam game" />
+    <meta name="twitter:description" content="" />
+
+    <!-- google+ metadata -->
+    <meta itemprop="name" content="Fathom - a Global Game Jam game">
+    <meta itemprop="description" content="">
+
+    <title>Fathom - a Global Game Jam game</title>
+    <link href='https://fonts.googleapis.com/css?family=VT323' rel='stylesheet' type='text/css'>
+    <style>
+    	body, html {
+    		margin: 0;
+    		padding: 0;
+    		height: 100%;
+    		text-align: center;
+            overflow: hidden;
+            font-family: 'VT323', Arial;
+    	}
+    	body {
+    		background: black;
+    		color: white;
+    	}
+        /*#wrap {
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            align-items: center;
+        }*/
+        canvas {
+            text-align: center;
+            margin: 0 auto!important;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 2px 0;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+            box-shadow: 0 0 40px rgba(100, 30, 80, 0.5);
+        }
+
+        .intro {
+            background-image: url(/static/assets/bg.jpg);
+            height: 100%;
+        }
+        .container {
+            display: flex;
+            width: 600px;
+            margin: 0 auto;
+        }
+        .container .details {
+            flex: 1;
+            font-size: 22px;
+            padding: 40px 10px;
+        }
+        .instructions {
+            padding-top: 50px;
+        }
+        .cta {
+            padding: 20px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .cta a {
+            font-size: 48px;
+            font-weight: bold;
+            color: #4411aa;
+        }
+
+        footer {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            width: 100%;
+            font-size: 22px;
+            text-align: center;
+            color: #555555;
+        }
+    </style>
+    <script src="/shared/js/phaser.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <!--<script>
+     window._game = "{{game}}";
+    </script>-->
+</head>
+<body>
+    
+</body>
+</html>
