@@ -1,5 +1,5 @@
 visor:
-    image: node:7-alpine
+    image: node:7
     volumes:
         - ./client:/src
         - ./shared:/shared
@@ -7,7 +7,7 @@ visor:
     command: make watch
 
 screen:
-    image: node:7-alpine
+    image: node:7
     volumes:
         - ./server:/src
         - ./shared:/shared
