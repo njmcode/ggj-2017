@@ -21,3 +21,6 @@ There are two main components to the game: *Visor* and *Screen*.
  * *Screen* is the view seen by the player(s) issuing guidance and instructions.
 
 Once `make run` has finished, *Screen* will be available from `localhost:5005`.
+
+`nodemon` is used to watch any changes in the `js` directory and rebuild/restart
+the Node server accordingly.

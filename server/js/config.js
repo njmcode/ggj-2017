@@ -1,6 +1,6 @@
 /**
  * config.js
- * 
+ *
  * Configuration object used across the app.
  */
 
@@ -8,15 +8,15 @@ var CONFIG = {
     debug: {
         enabled: true
     },
-    
-    stateAfterStartup: 'Play',
-    
+
+    stateAfterStartup: 'Title',
+
     // Pixel size of the Phaser canvas
     gameSize: {
         width: 600,
         height: 400
     },
-    
+
     font: {
         baseStyle: {
             font: '24px VT323',
@@ -33,7 +33,7 @@ var CONFIG = {
             align: 'center'
         }
     },
-    
+
     settings: {
     }
 };
