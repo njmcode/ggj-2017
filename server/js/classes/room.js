@@ -3,6 +3,8 @@
  */
 'use strict';
 
+var Util = require('./util');
+
 var Room = function( roomId, roomsize, bounds ) {
     this.roomId = roomId;
     this.connectedRooms = [];
@@ -69,7 +71,7 @@ Room.prototype.determineDirectionOf = function( room ) {
     return null;
 };
 Room.prototype.setDoorway = function( direction ) {
-    var roomMiddle = Math.floor(this.roomsize / 2);
+    var roomMiddle = Math.floor(this.roomsize / 2) - 1;
     
     switch ( direction ) {
         case 'N':
@@ -88,6 +90,27 @@ Room.prototype.setDoorway = function( direction ) {
             this.tiles[0][roomMiddle] = 0;
             this.tiles[0][roomMiddle + 1] = 0;
             break;
+    }
+};
+Room.prototype.generateRoom = function() {
+    var hazardCount, hX, hY;
+    if ( !this.hasConnectedRooms() ) {
+        // Fill the room (impassable)
+        for ( var x = 0; x < this.roomsize; x++ ) {
+            for ( var y = 0; y < this.roomsize; y++ ) {
+                this.tiles[x][y] = 1;
+            }
+        }
+    }
+    else {
+        // Randomly place hazards
+        hazardCount = Util.randomInt(18, 3);
+        for ( var c = 0; c < hazardCount; c++ ) {
+            // Don't generate hazards at the walls >.>
+            hX = Util.randomInt(7, 1);
+            hY = Util.randomInt(7, 1);
+            this.tiles[hX][hY] = 8;
+        }
     }
 };
 

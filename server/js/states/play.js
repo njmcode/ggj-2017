@@ -59,11 +59,16 @@ PlayfieldState.prototype.create = function() {
         }
     }
     
+    // Player sprite needs to be smaller than the tile size, or getting around
+    //  hazards is going to be impossible!!
     var playerStartX = Math.floor(roomSize / 2) * tileSize;
     var playerStartY = Math.floor(roomSize / 2) * tileSize + (theMap.startRoom.roomId * roomSize * tileSize);
     var playerSprite = state.playerSprite = state.game.add.sprite(playerStartX, playerStartY, 'player');
+    playerSprite.height = 16;
+    playerSprite.width = 16;
     playerSprite.anchor.set(0.5, 0.5);
     state.game.physics.enable(playerSprite);
+    playerSprite.body.setSize(24, 24, 0, 4);    // Note: body size is based off original sprite size!
     
     state.game.camera.follow(playerSprite);
     
@@ -108,16 +113,20 @@ PlayfieldState.prototype.update = function() {
     
     state.playerSprite.body.velocity.x = 0;
     state.playerSprite.body.velocity.y = 0;
-    state.playerSprite.body.angularVelocity = 0;
     
     if ( state.cursors.left.isDown ) {
-        state.playerSprite.body.angularVelocity = -200;
+        //state.playerSprite.body.angularVelocity = -100;
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle - 90, 100, state.playerSprite.body.velocity);
     }
     else if ( state.cursors.right.isDown ) {
-        state.playerSprite.body.angularVelocity = 200;
+        //state.playerSprite.body.angularVelocity = 100;
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle + 90, 100, state.playerSprite.body.velocity);
     }
     if ( state.cursors.up.isDown ) {
-        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, 200, state.playerSprite.body.velocity);
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, 100, state.playerSprite.body.velocity);
+    }
+    else if ( state.cursors.down.isDown ) {
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, -100, state.playerSprite.body.velocity);
     }
 };
 
