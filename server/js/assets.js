@@ -15,16 +15,7 @@ var assets = {
     // ui, scenes and images are standard image files.
     // Format is [key, path, width, height]
     ui: [
-        /*['icon-fire', '/static/assets/icon-fire.png', 128, 128],
-        ['icon-shield', '/static/assets/icon-shield.png', 128, 128],
-        ['title-logo', '/static/assets/title/logo.png', 480, 81],
-        ['starfield', '/static/assets/title/starfield.png', 800, 400],
-        ['layer1', '/static/assets/title/layer1.png', 800, 400],
-        ['layer2', '/static/assets/title/layer2.png', 800, 400],
-        ['layer3', '/static/assets/title/layer3.png', 800, 400],
-        ['clouds', '/static/assets/title/clouds.png', 800, 400],
-        ['dusk-mask', '/static/assets/title/dusk_mask.png', 800, 400],
-        ['vignette', '/static/assets/title/vignette.png', 800, 400]*/
+        ['logo', 'assets/logo.png', 589, 329]
     ],
     // Format is [key, path, width, height]
     images: [

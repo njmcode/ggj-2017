@@ -1,0 +1,74 @@
+<!doctype html>
+<html>
+<head>
+<title>Debug Controls</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<meta name="theme-color" content="#2c0c3f"/>
+<style>
+body {
+    background: black;
+    color: turquoise;
+    font-family: monospace;
+}
+
+h1 {
+    color: white;
+}
+
+#wrap {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+#controls {
+    margin: 1em;
+    padding: 1em;
+    border: 1px solid turquoise;
+    display: flex;
+    justify-content: space-between;
+}
+</style>
+</head>
+
+<body>
+
+<div id="wrap">
+    <h1>DEBUG</h1>
+
+    <div id="controls">
+        <div id="dpad">
+            <button data-dir="fwd">Forward</button>
+            <button data-dir="back">Back</button>
+            <button data-dir="left">Left</button>
+            <button data-dir="right">Right</button>
+        </div>
+
+        <div id="rotation">
+            <span>Rotation</span>
+            <input id="rot-range" type="range" min="0" max="290" step="1" />
+        </div>
+    </div>
+</div>
+
+<script src="/shared/js/jquery.min.js"></script>
+<script src="/shared/js/comms/socket-transport.js"></script>
+<script>
+SocketTransport.open({
+    port: 5005,
+    onopen: function() {
+        SocketTransport.send('visor:connected');
+    }
+});
+
+$('#dpad button').on('mousedown', function() {
+    var dir = $(this).attr('data-dir');
+    console.log('Button down:', dir);
+});
+
+$('#dpad button').on('mouseup', function() {
+    var dir = $(this).attr('data-dir');
+    console.log('Button up:', dir);
+});
+</script>
+</body>
+</html>

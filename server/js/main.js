@@ -8,6 +8,7 @@ var CONFIG = require('./config');
 
 var States = {
     'Startup': require('./states/startup'),
+    'Title': require('./states/title'),
     'Play': require('./states/play')
 };
 
@@ -24,8 +25,8 @@ function Main() {
     for ( var k in States ) {
         game.state.add(k, States[k]);
     }
-    
-    console.log('hello world');
+
+    console.log('Starting game...');
     game.state.start('Startup');
 };
 

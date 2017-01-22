@@ -1,0 +1,12 @@
+<h1>CLIENT INDEX</h1>
+
+<script src="/shared/js/comms/socket-transport.js"></script>
+
+<script>
+SocketTransport.open({
+    port: 5005,
+    onopen: function() {
+        SocketTransport.send('visor:connected');
+    }
+});
+</script>

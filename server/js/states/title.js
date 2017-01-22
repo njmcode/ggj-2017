@@ -12,90 +12,99 @@ var TitleState = function() {};
 
 TitleState.prototype.preload = function() {
     _common.setGameScale(this.game);
-    this.load.crossOrigin = 'anonymous';
-    this.load.image('qr-code', window.qrCode);
 };
 
 TitleState.prototype.create = function() {
 
-    this.theme = this.add.audio('title-theme');
-    this.theme.play();
+  var state = this;
 
-    // Phaser.TileSprite.call(this, scene, 0, 0, scene.game.width, scene.game.height, bgImg, 0);
-    this.starBG = this.add.tileSprite(0, 0, 800, 300, 'starfield', 0);
+  // Water background
+  // Taken from Phaser FILTERS examples page
 
-    var clouds = this.add.sprite(0, 0, 'clouds');
-    this.add.tween(clouds).to({alpha: 0.5}, 1000, Phaser.Easing.Sinusoidal.InOut, true, 0, -1).yoyo(true);
+  var fragmentSrc = [
 
-    this.add.sprite(0, 0, 'dusk-mask');
-    this.add.sprite(0, 0, 'vignette');
+      "precision mediump float;",
 
-    this.layers = [
-        this.add.sprite(-400, 0, 'layer3'),
-        this.add.sprite(-400, 0, 'layer2'),
-        this.add.sprite(-400, 0, 'layer1')
-    ];
-    this.layers.forEach(function(layer) {
-        this.game.physics.enable(layer, Phaser.Physics.ARCADE);
-        layer.body.velocity.x = (Math.random() - 0.5) * 20;
-    }, this);
+      "uniform float     time;",
+      "uniform vec2      resolution;",
+      "uniform vec2      mouse;",
 
-    _common.insertWeather(this.game);
+      "#define MAX_ITER 4",
 
-    this.presentsTitle = this.add.text(this.game.world.centerX,
-        50, STRINGS.titlePresents, CONFIG.font.smallStyle);
-    this.presentsTitle.anchor.set(0.5);
+      "void main( void )",
+      "{",
+          "vec2 v_texCoord = gl_FragCoord.xy / resolution;",
 
-    this.ghostTitle = this.add.sprite(400, 120, 'title-logo');
-    this.ghostTitle.anchor.set(0.5);
-    this.ghostTitle.alpha = 0.4;
-    this.ghostTitle.tint = 0xffaacc;
+          "vec2 p =  v_texCoord * 8.0 - vec2(20.0);",
+          "vec2 i = p;",
+          "float c = 1.0;",
+          "float inten = .05;",
 
-    this.title = this.add.sprite(400, 120, 'title-logo');
-    this.title.anchor.set(0.5);
+          "for (int n = 0; n < MAX_ITER; n++)",
+          "{",
+              "float t = time * (1.0 - (3.0 / float(n+1)));",
 
-    this.creditText = this.add.text(this.game.world.centerX,
-        this.game.height - 10, STRINGS.titleCredit, CONFIG.font.smallStyle);
-    this.creditText.anchor.setTo(0.5, 1);
+              "i = p + vec2(cos(t - i.x) + sin(t + i.y),",
+              "sin(t - i.y) + cos(t + i.x));",
 
-    this.qr = this.add.sprite(250, 250, 'qr-code');
-    this.qr.anchor.set(0.5);
-    this.qr.scale.set(0.5);
+              "c += 1.0/length(vec2(p.x / (sin(i.x+t)/inten),",
+              "p.y / (cos(i.y+t)/inten)));",
+          "}",
 
-    var style = {font: '18px VT323', fill: '#aaaaaa', wordWrap: true, wordWrapWidth: 180, align: 'center'};
-    this.info = this.add.text(390, 210, STRINGS.titleJoinPrompt + window.joinURL, style);
+          "c /= float(MAX_ITER);",
+          "c = 1.5 - sqrt(c);",
 
-    this.socket = _common.socket;
-    this.socket.on('room', this.handleRoomStatus.bind(this));
-    this.socket.emit('host', {
-        game: window.game
+          "vec4 texColor = vec4(0.0, 0.01, 0.015, 1.0);",
+
+          "texColor.rgb *= (1.0 / (1.0 - (c + 0.05)));",
+
+          "gl_FragColor = texColor;",
+      "}"
+  ];
+
+  state.waterFilter = new Phaser.Filter(state.game, null, fragmentSrc);
+  state.waterFilter.setResolution(800, 500);
+  var waterBG = state.add.sprite()
+  waterBG.width = 800;
+  waterBG.height = 500;
+  waterBG.filters = [state.waterFilter];
+
+  // Main logo
+  state.logo = state.add.sprite(400, 250, 'logo');
+  state.logo.anchor.set(0.5);
+  state.logo.alpha = 0.5;
+
+  // Connection status text
+  state.conStatusText = state.add.text(
+        400, 400,
+        STRINGS['title.awaitingVisor'],
+        CONFIG.font.baseStyle);
+  state.conStatusText.anchor.set(0.5);
+
+  // Credits footer
+  state.footerText = state.add.text(
+    400, 480,
+    STRINGS['title.creditFooter'],
+    CONFIG.font.smallStyle);
+  state.footerText.anchor.set(0.5);
+
+  function _gameStart() {
+    state.conStatusText.setText(STRINGS['title.gameStarting']);
+    state.time.events.add(Phaser.Timer.SECOND * 5, function() {
+      state.game.state.start('Play');
     });
+    SocketTransport.off('visor:connected');
+  }
+
+  SocketTransport.on('visor:connected', _gameStart);
 };
 
 
 TitleState.prototype.update = function() {
-    this.layers.forEach(function(layer) {
-        if (layer.body.position.x < -800) {
-            layer.body.velocity.x = (Math.random()) * 10;
-        }
-        if (layer.body.position.x > 0) {
-            layer.body.velocity.x = (Math.random()) * (-10);
-        }
-    });
+  var state = this;
 
-    this.ghostTitle.position.x = 400 + this.game.rnd.integerInRange(-5, 5);
-    this.ghostTitle.position.y = 120 + this.game.rnd.integerInRange(-5, 5);
-
-    this.starBG.tilePosition.x += 0.1;
-};
-
-TitleState.prototype.handleRoomStatus = function(data) {
-    var self = this;
-    if (data.left != null && data.right != null) {
-        setTimeout(function() {
-            self.state.start('PlayField');
-        }, 2500);
-    }
+  state.waterFilter.update();
+  state.conStatusText.alpha = Math.abs(Math.sin(Date.now() * 0.005));
 };
 
 module.exports = TitleState;

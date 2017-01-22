@@ -12,7 +12,7 @@
     "devDependencies": {},
     "scripts": {
         "build": "webpack -d",
-        "server": "nodemon main.js",
+        "server": "nodemon --watch js --ignore *.bundle.js --exec \"npm run build && node main.js\"",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "author": "",

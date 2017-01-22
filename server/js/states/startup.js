@@ -9,9 +9,7 @@ var Assets = require('../assets');
 var CONFIG = require('../config');
 var _common = require('./_common');
 
-var StartupState = function() {
-};
-
+var StartupState = function() {};
 
 StartupState.prototype.preload = function() {
     _common.setGameScale(this.game);
@@ -36,20 +34,18 @@ StartupState.prototype.preload = function() {
 };
 
 StartupState.prototype.create = function() {
-    /*
     var self = this;
-    _common.socket = io.connect();
-    _common.socket.on('connect', function() {
-        console.log('connect', window.game);
+
+    SocketTransport.open({
+      onopen: function() {
         if (window.location.hash) {
+            console.log('LOCATION HASH', window.location.hash.substr(1));
             self.game.state.start(window.location.hash.substr(1));
         } else {
             self.game.state.start(CONFIG.stateAfterStartup);
         }
+      }
     });
-    */
-    var self = this;
-    self.game.state.start(CONFIG.stateAfterStartup);
 };
 
 module.exports = StartupState;
