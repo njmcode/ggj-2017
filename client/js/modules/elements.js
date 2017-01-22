@@ -42,27 +42,44 @@ var ElementFactory = (function() {
       map: texture,
       side: THREE.BackSide
     });
+    material.depthWrite = false;
+    material.depthTest = false;
     var mesh = new THREE.Mesh(geo, material);
+    mesh.renderDepth = -10;
 
     return mesh;
   }
 
-  function ScaryFace() {
-    var texture = new THREE.ImageUtils.loadTexture(
-      'assets/textures/scare.png'
+  function VisorHUDLower() {
+    var geo = new THREE.PlaneGeometry(11.2, 2.5);
+    var texture = THREE.ImageUtils.loadTexture(
+      'assets/hudtex/hud-bottom.png'
     );
-    var geo = new THREE.PlaneGeometry(5, 5);
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
     texture.anisotropy = renderer.getMaxAnisotropy();
+
     var material = new THREE.MeshBasicMaterial({
       shading: THREE.FlatShading,
       transparent: true,
       map: texture
     });
-    var mesh  = new THREE.Mesh(geo, material);
-    mesh.position.set(0, 0, -5);
-    mesh.material.opacity = 1;
+    var mesh = new THREE.Mesh(geo, material);
+
+    return mesh;
+  }
+
+  function VisorHUDUpper() {
+    var geo = new THREE.PlaneGeometry(11.2, 2.5);
+    var texture = THREE.ImageUtils.loadTexture(
+      'assets/hudtex/hud-top.png'
+    );
+    texture.anisotropy = renderer.getMaxAnisotropy();
+
+    var material = new THREE.MeshBasicMaterial({
+      shading: THREE.FlatShading,
+      transparent: true,
+      map: texture
+    });
+    var mesh = new THREE.Mesh(geo, material);
 
     return mesh;
   }
@@ -70,7 +87,8 @@ var ElementFactory = (function() {
   return {
     VisorFloor: VisorFloor,
     VisorSphere: VisorSphere,
-    ScaryFace: ScaryFace
+    VisorHUDLower: VisorHUDLower,
+    VisorHUDUpper: VisorHUDUpper
   }
 
 })();

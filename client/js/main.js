@@ -13,7 +13,7 @@ var STEREO = !(window.location.hash && window.location.hash.substr(1) === '2d');
 SocketTransport.open({
     /*host: '29b12dba.ngrok.io',
     port: 5005,*/
-    url: location.protocol.replace('http', 'ws') + '//29b12dba.ngrok.io',
+    url: location.protocol.replace('http', 'ws') + '//95a28c27.ngrok.io',
     onopen: function() {
       console.log('SOCKET OPEN');
         SocketTransport.send('visor:connected');
@@ -24,6 +24,10 @@ SocketTransport.open({
 
 SocketTransport.on('simulation:dead', function(data) {
 
+});
+
+SocketTransport.on('REFRESH', function(data) {
+  window.location.reload();
 });
 
 function setOrientationControls(e) {
@@ -104,9 +108,19 @@ function init() {
     map: hudIconTexture
   });
   hudIconMesh = new THREE.Mesh(hudIconGeo, hudIconMaterial);
-  hudIconMesh.position.set(-4, -2, -6);
+  hudIconMesh.position.set(-3, -1, -7);
 
   hudGroup.add(hudIconMesh);
+
+  var hudLower = ElementFactory.VisorHUDLower();
+  hudLower.position.set(0, -3, -6);
+  hudLower.material.opacity = 0.5;
+  hudGroup.add(hudLower);
+
+  var hudUpper = ElementFactory.VisorHUDUpper();
+  hudUpper.position.set(0, 3, -6);
+  hudUpper.material.opacity = 0.5;
+  hudGroup.add(hudUpper);
 
   scene.add(hudGroup);
   hudGroup.position.copy(camera.position);
@@ -151,7 +165,7 @@ function update(dt) {
   _ct = Date.now();
   if (_ct - _lt > SOCKET_UPDATE_TIME) {
     SocketTransport.send('visor:rotation', {
-      angle: radToDeg(camera.rotation.y)
+      angle: radToDeg(-camera.rotation.y)
     });
     _lt = _ct;
   }
