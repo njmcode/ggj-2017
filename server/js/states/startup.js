@@ -35,12 +35,17 @@ StartupState.prototype.preload = function() {
 
 StartupState.prototype.create = function() {
     var self = this;
-    if (window.location.hash) {
-        console.log('LOCATION HASH', window.location.hash.substr(1));
-        self.game.state.start(window.location.hash.substr(1));
-    } else {
-        self.game.state.start(CONFIG.stateAfterStartup);
-    }
+
+    SocketTransport.open({
+      onopen: function() {
+        if (window.location.hash) {
+            console.log('LOCATION HASH', window.location.hash.substr(1));
+            self.game.state.start(window.location.hash.substr(1));
+        } else {
+            self.game.state.start(CONFIG.stateAfterStartup);
+        }
+      }
+    });
 };
 
 module.exports = StartupState;

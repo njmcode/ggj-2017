@@ -88,14 +88,15 @@ TitleState.prototype.create = function() {
     CONFIG.font.smallStyle);
   state.footerText.anchor.set(0.5);
 
-  SocketTransport.on('visor:connected', function() {
+  function _gameStart() {
     state.conStatusText.setText(STRINGS['title.gameStarting']);
     state.time.events.add(Phaser.Timer.SECOND * 5, function() {
       state.game.state.start('Play');
     });
-  });
+    SocketTransport.off('visor:connected');
+  }
 
-  SocketTransport.open();
+  SocketTransport.on('visor:connected', _gameStart);
 };
 
 
