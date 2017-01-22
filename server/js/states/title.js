@@ -87,6 +87,15 @@ TitleState.prototype.create = function() {
     STRINGS['title.creditFooter'],
     CONFIG.font.smallStyle);
   state.footerText.anchor.set(0.5);
+
+  SocketTransport.on('visor:connected', function() {
+    state.conStatusText.setText(STRINGS['title.gameStarting']);
+    state.time.events.add(Phaser.Timer.SECOND * 5, function() {
+      state.game.state.start('Play');
+    });
+  });
+
+  SocketTransport.open();
 };
 
 
