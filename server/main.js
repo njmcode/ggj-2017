@@ -19,7 +19,7 @@ var server = http.createServer(app);
 server.listen(PORT);
 
 console.log('HTTP server listening on %d', PORT);
-console.log('\nSIMULATION VIEW at http:/localhost:%d', PORT);
+console.log('\nSIMULATION VIEW at http://localhost:%d', PORT);
 
 /**
  Socket server
@@ -80,6 +80,10 @@ wss.on('connection', function(ws) {
   ws.on('close', function() {
     serverMsg('Client connection closed.');
   });
+
+  ws.on('error', function(e) {
+    serverMsg('ERROR in connection');
+  })
 
   serverMsg('Client connected, connection open.');
   console.log('CLIENTS ', wss.clients.length);
