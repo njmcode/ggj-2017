@@ -16,8 +16,8 @@ var Map = function( width, height, roomsize ) {
     this.xRange = width / roomsize;
     this.yRange = height / roomsize;
     this.rooms = [];
-    this.hasExit = false;
     this.startRoom;
+    this.exitRoom;
     
     this.initRooms();
     this.initPath();
@@ -109,10 +109,10 @@ Map.prototype.initPath = function() {
                 // Next room is beyond our map edge
                 nextRoomId = -1;
                 // Only one exit per map!
-                if ( !theMap.hasExit ) {
+                if ( !theMap.exitRoom ) {
                     theMap.rooms[lastRoomId].hasExit = true;
                     theMap.rooms[lastRoomId].setDoorway('E');
-                    theMap.hasExit = true;
+                    theMap.exitRoom = theMap.rooms[lastRoomId];
                 }
             }
             else if ( theMap.rooms[nextRoomId].hasConnectedRooms() ) {
@@ -149,6 +149,19 @@ Map.prototype.initPath = function() {
     for ( var r = 0, ln = theMap.rooms.length; r < ln; r++ ) {
         theMap.rooms[r].generateRoom();
     }
+};
+Map.prototype.getExitTiles = function() {
+    var tiles = [];
+    var offsetX, offsetY;
+    var roomMiddle = Math.floor(this.roomsize / 2) - 1;
+    
+    var roomId = this.exitRoom.roomId;
+    offsetX = Math.floor(roomId / this.yRange) * this.roomsize;
+    offsetY = (roomId % this.yRange) * this.roomsize;
+    return [
+        [offsetX + this.roomsize - 1, offsetY + roomMiddle],
+        [offsetX + this.roomsize - 1, offsetY + roomMiddle + 1]
+    ];
 };
 
 module.exports = Map;

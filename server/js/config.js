@@ -38,6 +38,17 @@ var CONFIG = {
     settings: {
         roomSize: 8,    // Room size in tiles
         tileSize: 32    // Tile size in pixels
+    },
+    
+    tiles: {
+        floor: 0,
+        hazardFloor: 1,
+        wall: 2,
+        hazardGeneral: 3,
+        hazardFire: 4,
+        hazardElectrical: 5,
+        hazardBio: 6,
+        hazardFall: 7
     }
 };
 
