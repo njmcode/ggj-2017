@@ -97,6 +97,8 @@ TitleState.prototype.create = function() {
   }
 
   SocketTransport.on('visor:connected', _gameStart);
+
+  _common.disablePausing(state.game);
 };
 
 

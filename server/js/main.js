@@ -12,6 +12,9 @@ var States = {
     'Play': require('./states/play')
 };
 
+//window.PhaserGlobal = window.PhaserGlobal || {};
+//window.PhaserGlobal.stopFocus = false;
+
 /**
  * Main app - logic is in the various states
  */
