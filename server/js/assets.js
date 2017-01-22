@@ -22,9 +22,11 @@ var assets = {
         /*['s-wizard', '/static/assets/empty.png', 40, 120],
         ['shot', '/static/assets/spell-shot.png', 128, 128],
         ['shield', '/static/assets/spell-shield.png', 128, 128]*/
-        ['walls', '/assets/walls.png', 224, 32],
-        ['player', '/assets/player.png', 32, 32],
-        ['hazard', '/assets/hazard.png', 32, 32]
+        ['floor', '/assets/floor.png', 64, 32],
+        ['walls', '/assets/walls.png', 32, 32],
+        ['player', '/assets/player.png', 64, 64],
+        ['hazards', '/assets/hazards.png', 160, 32],
+        ['exit', '/assets/exit.png', 32, 32]
     ],
     // Audio files to load
     sounds: [

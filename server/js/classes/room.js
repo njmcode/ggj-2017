@@ -3,6 +3,7 @@
  */
 'use strict';
 
+var CONFIG = require('../config');
 var Util = require('./util');
 var Path = require('./path');
 
@@ -20,7 +21,7 @@ var Room = function( roomId, roomsize, bounds ) {
     for ( var x = 0; x < roomsize; x++ ) {
         this.tiles[x] = [];
         for ( var y = 0; y < roomsize; y++ ) {
-            this.tiles[x].push( ( this.isEdgeTile(x, y) ) ? 1 : 0 );
+            this.tiles[x].push( ( this.isEdgeTile(x, y) ) ? CONFIG.tiles.wall : CONFIG.tiles.floor );
         }
     }
 };
@@ -75,20 +76,20 @@ Room.prototype.setDoorway = function( direction ) {
     
     switch ( direction ) {
         case 'N':
-            this.tiles[roomMiddle][0] = 0;
-            this.tiles[roomMiddle + 1][0] = 0;
+            this.tiles[roomMiddle][0] = CONFIG.tiles.floor;
+            this.tiles[roomMiddle + 1][0] = CONFIG.tiles.floor;
             break;
         case 'S':
-            this.tiles[roomMiddle][this.roomsize - 1] = 0;
-            this.tiles[roomMiddle + 1][this.roomsize - 1] = 0;
+            this.tiles[roomMiddle][this.roomsize - 1] = CONFIG.tiles.floor;
+            this.tiles[roomMiddle + 1][this.roomsize - 1] = CONFIG.tiles.floor;
             break;
         case 'E':
-            this.tiles[this.roomsize - 1][roomMiddle] = 0;
-            this.tiles[this.roomsize - 1][roomMiddle + 1] = 0;
+            this.tiles[this.roomsize - 1][roomMiddle] = CONFIG.tiles.floor;
+            this.tiles[this.roomsize - 1][roomMiddle + 1] = CONFIG.tiles.floor;
             break;
         case 'W':
-            this.tiles[0][roomMiddle] = 0;
-            this.tiles[0][roomMiddle + 1] = 0;
+            this.tiles[0][roomMiddle] = CONFIG.tiles.floor;
+            this.tiles[0][roomMiddle + 1] = CONFIG.tiles.floor;
             break;
     }
 };
@@ -98,7 +99,7 @@ Room.prototype.generateRoom = function() {
         // Fill the room (impassable)
         for ( var x = 0; x < this.roomsize; x++ ) {
             for ( var y = 0; y < this.roomsize; y++ ) {
-                this.tiles[x][y] = 1;
+                this.tiles[x][y] = CONFIG.tiles.wall;
             }
         }
     }
@@ -230,7 +231,7 @@ Room.prototype.generateRoom = function() {
         var temp;
         for ( var i = 0, ln = safePath.points.length; i < ln; i++ ) {
             temp = safePath.points[i];
-            this.tiles[temp[0]][temp[1]] = 8;
+            this.tiles[temp[0]][temp[1]] = CONFIG.tiles.hazardFloor;
         }
     }
 };

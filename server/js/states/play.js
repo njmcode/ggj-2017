@@ -33,10 +33,13 @@ PlayfieldState.prototype.create = function() {
     var layer = state.tileLayer = tileMap.create('layer1', 48, 32, tileSize, tileSize);
     layer.resizeWorld();
 
-    tileMap.addTilesetImage('walls', 'walls', tileSize, tileSize, 0, 0, 1);
-    tileMap.addTilesetImage('hazard', 'hazard', tileSize, tileSize, 0, 0, 8);
-    tileMap.setCollisionBetween(1, 7);
+    tileMap.addTilesetImage('floor', 'floor', tileSize, tileSize, 0, 0, 0);
+    tileMap.addTilesetImage('walls', 'walls', tileSize, tileSize, 0, 0, 2);
+    //tileMap.addTilesetImage('hazards', 'hazards', tileSize, tileSize, 0, 0, 3);
+    //tileMap.addTilesetImage('exit', 'exit', tileSize, tileSize, 0, 0, 16);
+    tileMap.setCollisionBetween(CONFIG.tiles.hazardFloor, CONFIG.tiles.wall);
 
+    // Set the tiles according to what the rooms have generated
     var rooms = theMap.rooms;
     var tiles, tileOffsetX, tileOffsetY, tX, tY, lnX, lnY;
     for ( var i = 0, ln = rooms.length; i < ln; i++ ) {
@@ -49,6 +52,21 @@ PlayfieldState.prototype.create = function() {
             }
         }
     }
+    
+    // Group the hazards
+    tileMap.setTileIndexCallback(CONFIG.tiles.hazardFloor, state.hazardHit, state, layer);
+    
+    // Add in exit tiles
+    var exitLayer = tileMap.create('objectLayer', 48, 32, tileSize, tileSize);
+    var exitTiles = theMap.getExitTiles();
+    tileMap.putTile(16, exitTiles[0][0], exitTiles[0][1], exitLayer);
+    tileMap.putTile(16, exitTiles[1][0], exitTiles[1][1], exitLayer);
+    
+    var exits = state.exits = state.game.add.group();
+    exits.enableBody = true;
+    tileMap.createFromTiles(16, 0, 'exit', exitLayer, exits);
+    console.log(exits);
+    
 
     // Player sprite needs to be smaller than the tile size, or getting around
     // hazards is going to be impossible!!
@@ -57,9 +75,9 @@ PlayfieldState.prototype.create = function() {
     var playerSprite = state.playerSprite = state.game.add.sprite(playerStartX, playerStartY, 'player');
     playerSprite.height = 16;
     playerSprite.width = 16;
-    playerSprite.anchor.set(0.5, 0.5);
+    playerSprite.anchor.set(0.4, 0.5);
     state.game.physics.enable(playerSprite);
-    playerSprite.body.setSize(24, 24, 0, 4);    // Note: body size is based off original sprite size!
+    playerSprite.body.setSize(48, 48, 0, 8);    // Note: body size is based off original sprite size!
 
     state.game.camera.follow(playerSprite);
 
@@ -92,6 +110,7 @@ PlayfieldState.prototype.create = function() {
 PlayfieldState.prototype.update = function() {
     var state = this;
     state.game.physics.arcade.collide(state.playerSprite, state.tileLayer);
+    state.game.physics.arcade.overlap(state.playerSprite, state.exits, state.exitFound, null, state);
 
     state.playerSprite.body.velocity.x = 0;
     state.playerSprite.body.velocity.y = 0;
@@ -113,6 +132,15 @@ PlayfieldState.prototype.update = function() {
 };
 
 PlayfieldState.prototype.render = function() {
+    //this.game.debug.body(this.playerSprite);
+};
+
+PlayfieldState.prototype.hazardHit = function() {
+    console.log('you ded');
+};
+
+PlayfieldState.prototype.exitFound = function() {
+    console.log('you win!');
 };
 
 module.exports = PlayfieldState;
