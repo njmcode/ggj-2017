@@ -26,13 +26,16 @@ PlayfieldState.prototype.create = function() {
     var tileSize = CONFIG.settings.tileSize;
 
     state.game.physics.startSystem(Phaser.Physics.ARCADE);
-
+    
     var theMap = new Map(48, 32, roomSize);
     console.log('map generated', theMap);
 
     var tileMap = state.game.add.tilemap();
     var layer = state.tileLayer = tileMap.create('layer1', 48, 32, tileSize, tileSize);
     layer.resizeWorld();
+    console.log(layer.width);
+    // Extend the world bounds by 200px (at scale) to accomodate the sidebar
+    state.game.world.setBounds(0, 0, (layer.widthInPixels + 200), layer.heightInPixels);
 
     tileMap.addTilesetImage('floor', 'floor', tileSize, tileSize, 0, 0, 0);
     tileMap.addTilesetImage('walls', 'walls', tileSize, tileSize, 0, 0, 2);
@@ -74,13 +77,19 @@ PlayfieldState.prototype.create = function() {
     var playerStartX = Math.floor(roomSize / 2) * tileSize;
     var playerStartY = Math.floor(roomSize / 2) * tileSize + (theMap.startRoom.roomId * roomSize * tileSize);
     var playerSprite = state.playerSprite = state.game.add.sprite(playerStartX, playerStartY, 'player');
-    playerSprite.height = 16;
-    playerSprite.width = 16;
+    playerSprite.height = 24;
+    playerSprite.width = 24;
     playerSprite.anchor.set(0.4, 0.5);
     state.game.physics.enable(playerSprite);
     playerSprite.body.setSize(48, 48, 0, 8);    // Note: body size is based off original sprite size!
 
     state.game.camera.follow(playerSprite);
+    
+    // UI Overlay
+    var overlay = state.game.add.image(0, 0, 'ui-overlay');
+    overlay.fixedToCamera = true;
+    overlay.bringToTop();
+
 
     // Player controls - these may need tweaked once we have socket comms working!
     playerSprite.body.maxAngular = 500;
@@ -139,11 +148,13 @@ PlayfieldState.prototype.render = function() {
 };
 
 PlayfieldState.prototype.hazardHit = function() {
-    console.log('you ded');
+    var state = this;
+    state.game.state.start('Death');
 };
 
 PlayfieldState.prototype.exitFound = function() {
-    console.log('you win!');
+    var state = this;
+    state.game.state.start('Win');
 };
 
 module.exports = PlayfieldState;
