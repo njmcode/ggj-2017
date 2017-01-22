@@ -2,6 +2,7 @@
 
 var CONFIG = require('../config');
 var _common = require('./_common');
+var Gamepad = require('../utils/gamepad');
 var Map = require('../classes/map');
 
 
@@ -86,6 +87,8 @@ PlayfieldState.prototype.create = function() {
       state.playerSprite.angle = data.angle;
     });
 
+    Gamepad.start();
+
     _common.disablePausing(state.game);
 };
 
@@ -96,18 +99,18 @@ PlayfieldState.prototype.update = function() {
     state.playerSprite.body.velocity.x = 0;
     state.playerSprite.body.velocity.y = 0;
 
-    if ( state.socketControls.left || state.cursors.left.isDown ) {
+    if ( state.socketControls.left || state.cursors.left.isDown || Gamepad.dirs.left ) {
         //state.playerSprite.body.angularVelocity = -100;
         state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle - 90, 100, state.playerSprite.body.velocity);
     }
-    else if ( state.socketControls.right || state.cursors.right.isDown ) {
+    else if ( state.socketControls.right || state.cursors.right.isDown || Gamepad.dirs.right ) {
         //state.playerSprite.body.angularVelocity = 100;
         state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle + 90, 100, state.playerSprite.body.velocity);
     }
-    if ( state.socketControls.fwd || state.cursors.up.isDown ) {
+    if ( state.socketControls.fwd || state.cursors.up.isDown || Gamepad.dirs.up ) {
         state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, 100, state.playerSprite.body.velocity);
     }
-    else if ( state.socketControls.back || state.cursors.down.isDown ) {
+    else if ( state.socketControls.back || state.cursors.down.isDown || Gamepad.dirs.down ) {
         state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, -100, state.playerSprite.body.velocity);
     }
 };
