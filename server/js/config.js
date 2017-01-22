@@ -32,6 +32,13 @@ var CONFIG = {
             stroke: '#000',
             strokeThickness: 1,
             align: 'center'
+        },
+        timerStyle: {
+            font: '24px VT323',
+            fill: '#6e0000',
+            stroke: '#000',
+            strokeThickness: 1,
+            align: 'center'
         }
     },
 

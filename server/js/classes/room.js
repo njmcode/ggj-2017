@@ -107,15 +107,8 @@ Room.prototype.generateRoom = function() {
         var safePath, startPoint, nextRoomIndex = 1, nextTarget;
         
         // Randomly place hazards, but not in the starting room
-        /*
-        hazardCount = Util.randomInt(18, 3);
-        for ( var c = 0; c < hazardCount; c++ ) {
-            // Don't generate hazards at the walls >.>
-            hX = Util.randomInt(7, 1);
-            hY = Util.randomInt(7, 1);
-            this.tiles[hX][hY] = 8;
-        }
-        */
+        
+        // Helper functions for generating a minumum "safe" path through the room
         var pickDoorTargetTile = function( direction ) {
             var roomMiddle = Math.floor(this.roomsize / 2) - 1;
             roomMiddle += Util.randomInt(1);
@@ -228,10 +221,21 @@ Room.prototype.generateRoom = function() {
         }
         
         // TESTING ONLY: mark the path with the hazard tile for now
+        /*
         var temp;
         for ( var i = 0, ln = safePath.points.length; i < ln; i++ ) {
             temp = safePath.points[i];
             this.tiles[temp[0]][temp[1]] = CONFIG.tiles.hazardFloor;
+        }*/
+        
+        hazardCount = Util.randomInt(18);
+        for ( var c = 0; c < hazardCount; c++ ) {
+            // Don't generate hazards at the walls >.>
+            hX = Util.randomInt(7, 1);
+            hY = Util.randomInt(7, 1);
+            if ( !safePath.contains(hX, hY) ) {
+                this.tiles[hX][hY] = CONFIG.tiles.hazardFloor;
+            }
         }
     }
 };
