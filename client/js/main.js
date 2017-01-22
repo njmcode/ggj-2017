@@ -22,8 +22,20 @@ SocketTransport.open({
     }
 });
 
+var MOTION = {
+  fwd: false,
+  back: false,
+  left: false,
+  right: false
+}
+
 SocketTransport.on('simulation:dead', function(data) {
 
+});
+
+SocketTransport.on('simulation:movement', function(data) {
+  console.log(data);
+  MOTION[data.direction] = data.active;
 });
 
 SocketTransport.on('REFRESH', function(data) {
@@ -61,6 +73,8 @@ function init() {
   camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
   camera.position.set(0, 10, 0);
   scene.add(camera);
+
+  console.log('CAMERA', camera);
 
   controls = new THREE.OrbitControls(camera, element);
   controls.rotateUp(Math.PI / 4);
@@ -145,10 +159,28 @@ function resize() {
 var SOCKET_UPDATE_TIME = 50;
 var _lt, _ct;
 var _lt = Date.now();
+
+
+var MOTION_SPEED = 0.08;
+
 function update(dt) {
   resize();
 
-  camera.position.set(Math.sin(Date.now() * 0.0005) * 5, 10, Math.sin(Date.now() * 0.001) * 5);
+  //camera.position.set(Math.sin(Date.now() * 0.0005) * 5, 10, Math.sin(Date.now() * 0.001) * 5);
+  camera.position.y = 10;
+  /*var dir = camera.getWorldDirection();*/
+  if (MOTION.fwd) {
+    camera.translateZ( -MOTION_SPEED );
+  } else if (MOTION.back) {
+    camera.translateZ( MOTION_SPEED );
+  }
+
+  if (MOTION.left) {
+    camera.translateX( -MOTION_SPEED );
+  } else if (MOTION.right) {
+    camera.translateX( MOTION_SPEED );
+  }
+
   rotsphere.position.copy(camera.position);
   rotsphere.position.y = camera.position.y - 25;
 
