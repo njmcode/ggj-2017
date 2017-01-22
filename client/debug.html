@@ -45,8 +45,11 @@ h1 {
 
         <div id="rotation">
             <span>Rotation</span>
+            <input id="rot-active" type="checkbox" />
             <input id="rot-range" type="range" min="0" max="290" step="1" />
         </div>
+
+        <button id="refresh">Refresh visor</button>
     </div>
 </div>
 
@@ -54,7 +57,7 @@ h1 {
 <script src="/shared/js/comms/socket-transport.js"></script>
 <script>
 SocketTransport.open({
-    port: 5005,
+    url: location.protocol.replace('http', 'ws') + '//95a28c27.ngrok.io',
     onopen: function() {
         SocketTransport.send('visor:connected');
     }
@@ -80,10 +83,16 @@ $('#dpad button').on('mouseup', function() {
 });
 
 $('#rot-range').on('input', function() {
+    var isActive = $('#rot-active').is(':checked');
+    if(!isActive) return false;
     var ang = $(this).val();
     SocketTransport.send('visor:rotation', {
         angle: ang
     });
+});
+
+$('#refresh').on('click', function() {
+    SocketTransport.send('REFRESH');
 });
 </script>
 </body>
