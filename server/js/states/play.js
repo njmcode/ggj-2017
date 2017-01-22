@@ -90,6 +90,15 @@ PlayfieldState.prototype.create = function() {
     overlay.fixedToCamera = true;
     overlay.bringToTop();
 
+    // Game timer
+    state.timerText = state.add.text(
+        300, 100,
+        '5:00.000',
+        CONFIG.font.timerStyle);
+    state.timerText.anchor.set(0.5);
+    state.timerText.fixedToCamera = true;
+    state.timerText.bringToTop();
+    state.game.time.events.add(5 * 60 * Phaser.Timer.SECOND, state.updateGameTimer, state);
 
     // Player controls - these may need tweaked once we have socket comms working!
     playerSprite.body.maxAngular = 500;
@@ -178,7 +187,10 @@ PlayfieldState.prototype.update = function() {
 };
 
 PlayfieldState.prototype.render = function() {
-    //this.game.debug.body(this.playerSprite);
+    var state = this;
+    
+    var updateText = state.formatTime(state.game.time.events.duration);
+    state.timerText.setText(updateText);
 };
 
 PlayfieldState.prototype.hazardHit = function() {
@@ -189,6 +201,30 @@ PlayfieldState.prototype.hazardHit = function() {
 PlayfieldState.prototype.exitFound = function() {
     var state = this;
     state.game.state.start('Win');
+};
+PlayfieldState.prototype.updateGameTimer = function() {
+    state.game.state.start('Death');
+};
+PlayfieldState.prototype.formatTime = function( duration ) {
+    var timeString = '';
+    var remaining, min, sec;
+    min = Math.floor(duration / Phaser.Timer.MINUTE);
+    remaining = duration - (min * Phaser.Timer.MINUTE);
+    
+    sec = Math.floor(remaining / Phaser.Timer.SECOND);
+    remaining -= (sec * Phaser.Timer.SECOND);
+    
+    timeString = min + ':';
+    timeString += ( ( sec < 10 ) ? '0' + sec : sec ) + '.';
+    if ( remaining < 10 ) {
+        timeString += '00';
+    }
+    else if ( remaining < 100 ) {
+        timeString += '0';
+    }
+    timeString += remaining.toFixed(0);
+    
+    return timeString;
 };
 
 module.exports = PlayfieldState;
