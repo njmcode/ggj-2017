@@ -12,7 +12,7 @@
 
 var SocketTransport = (function() {
 
-  var DEBUG = false;
+  var DEBUG = true;
 
   var host, ws;
 
@@ -58,7 +58,11 @@ var SocketTransport = (function() {
   Socket.open = function(config) {
     if (!config) config = {};
 
-    host = 'ws://' + (config.host || location.hostname) + ':' + (config.port || location.port);
+    if (config.url) {
+      host = config.url
+    } else {
+      host = location.protocol.replace('http', 'ws') + '//' + (config.host || location.hostname) + ':' + (config.port || location.port);
+    }
     DEBUG && console.log('Socket: host is', host);
 
     ws = new WebSocket(host);

@@ -1,12 +1,47 @@
-<h1>CLIENT INDEX</h1>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>FATHOM</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+      body {
+        margin: 0px;
+        overflow: hidden;
+        background: black linear-gradient(#012, transparent) fixed no-repeat;
+        color: turquoise;
+        font-family: monospace;
+      }
 
-<script src="/shared/js/comms/socket-transport.js"></script>
+      #wrap {
+        max-width: 500px;
+        margin: 2em auto;
+        text-align: center;
+      }
 
-<script>
-SocketTransport.open({
-    port: 5005,
-    onopen: function() {
-        SocketTransport.send('visor:connected');
-    }
-});
-</script>
+      img#logo {
+        display: block;
+        margin: 0 auto;
+      }
+
+      a {
+        display: inline-block;
+        padding: 1em;
+        color: green;
+        border: 2px solid green;
+        text-decoration: none;
+      }
+
+    </style>
+  </head>
+  <body>
+    <div id="wrap">
+        <img id="logo" src="assets/logo.png" width="300px" />
+        <a href="/play.html">Start</a>
+    </div>
+
+    <script>
+
+    </script>
+  </body>
+</html>
