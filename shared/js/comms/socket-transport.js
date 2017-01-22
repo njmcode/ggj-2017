@@ -25,7 +25,7 @@ var SocketTransport = (function() {
     },
     off: function(action, callback) {
       console.log('Socket: unbind ' + action);
-      if (!manifest[action]) return false;
+      if (!manifest[action] || manifest[action].length === 0) return false;
       if (callback) {
         var pos = manifest[action].indexOf(callback);
         if (pos === -1) return false;
@@ -35,7 +35,7 @@ var SocketTransport = (function() {
       }
     },
     trigger: function(action, data) {
-      if (!manifest[action]) return false;
+      if (!manifest[action] || manifest[action].length === 0) return false;
       console.log('Socket: triggered ' + action, data);
       manifest[action].forEach(function(cb) {
         cb(data);
