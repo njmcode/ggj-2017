@@ -26,7 +26,7 @@ PlayfieldState.prototype.create = function() {
     var tileSize = CONFIG.settings.tileSize;
 
     state.game.physics.startSystem(Phaser.Physics.ARCADE);
-    
+
     var theMap = new Map(48, 32, roomSize);
     console.log('map generated', theMap);
 
@@ -56,21 +56,21 @@ PlayfieldState.prototype.create = function() {
             }
         }
     }
-    
+
     // Group the hazards
     tileMap.setTileIndexCallback(CONFIG.tiles.hazardFloor, state.hazardHit, state, layer);
-    
+
     // Add in exit tiles
     var exitLayer = tileMap.create('objectLayer', 48, 32, tileSize, tileSize);
     var exitTiles = theMap.getExitTiles();
     tileMap.putTile(16, exitTiles[0][0], exitTiles[0][1], exitLayer);
     tileMap.putTile(16, exitTiles[1][0], exitTiles[1][1], exitLayer);
-    
+
     var exits = state.exits = state.game.add.group();
     exits.enableBody = true;
     tileMap.createFromTiles(16, 0, 'exit', exitLayer, exits);
     console.log(exits);
-    
+
 
     // Player sprite needs to be smaller than the tile size, or getting around
     // hazards is going to be impossible!!
@@ -84,7 +84,7 @@ PlayfieldState.prototype.create = function() {
     playerSprite.body.setSize(48, 48, 0, 8);    // Note: body size is based off original sprite size!
 
     state.game.camera.follow(playerSprite);
-    
+
     // UI Overlay
     var overlay = state.game.add.image(0, 0, 'ui-overlay');
     overlay.fixedToCamera = true;
@@ -98,6 +98,13 @@ PlayfieldState.prototype.create = function() {
 
     // Bind socket events for controls
     state.socketControls = {
+      fwd: false,
+      back: false,
+      left: false,
+      right: false
+    };
+
+    state.prevControls = {
       fwd: false,
       back: false,
       left: false,
@@ -127,20 +134,47 @@ PlayfieldState.prototype.update = function() {
     state.playerSprite.body.velocity.x = 0;
     state.playerSprite.body.velocity.y = 0;
 
+    var newControls = {
+      fwd: false,
+      back: false,
+      left: false,
+      right: false
+    };
+
     if ( state.socketControls.left || state.cursors.left.isDown || Gamepad.dirs.left ) {
-        //state.playerSprite.body.angularVelocity = -100;
-        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle - 90, 100, state.playerSprite.body.velocity);
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle - 90, 100,
+          state.playerSprite.body.velocity);
+        newControls.left = true;
+        newControls.right = false;
     }
     else if ( state.socketControls.right || state.cursors.right.isDown || Gamepad.dirs.right ) {
-        //state.playerSprite.body.angularVelocity = 100;
-        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle + 90, 100, state.playerSprite.body.velocity);
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle + 90, 100,
+          state.playerSprite.body.velocity);
+        newControls.right = true;
+        newControls.left = false;
     }
     if ( state.socketControls.fwd || state.cursors.up.isDown || Gamepad.dirs.up ) {
-        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, 100, state.playerSprite.body.velocity);
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, 100,
+          state.playerSprite.body.velocity);
+        newControls.fwd = true;
+        newControls.back = false;
     }
     else if ( state.socketControls.back || state.cursors.down.isDown || Gamepad.dirs.down ) {
-        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, -100, state.playerSprite.body.velocity);
+        state.game.physics.arcade.velocityFromAngle(state.playerSprite.angle, -100,
+          state.playerSprite.body.velocity);
+        newControls.back = true;
+        newControls.fwd = false;
     }
+
+    for(var k in newControls) {
+      if(state.prevControls[k] !== newControls[k]) {
+        SocketTransport.send('simulation:movement', {
+          direction: k,
+          active: newControls[k]
+        });
+      }
+    }
+    state.prevControls = newControls;
 };
 
 PlayfieldState.prototype.render = function() {

@@ -13,7 +13,7 @@ var STEREO = !(window.location.hash && window.location.hash.substr(1) === '2d');
 SocketTransport.open({
     /*host: '29b12dba.ngrok.io',
     port: 5005,*/
-    url: location.protocol.replace('http', 'ws') + '//29b12dba.ngrok.io',
+    url: location.protocol.replace('http', 'ws') + '//95a28c27.ngrok.io',
     onopen: function() {
       console.log('SOCKET OPEN');
         SocketTransport.send('visor:connected');
@@ -22,8 +22,24 @@ SocketTransport.open({
     }
 });
 
+var MOTION = {
+  fwd: false,
+  back: false,
+  left: false,
+  right: false
+}
+
 SocketTransport.on('simulation:dead', function(data) {
 
+});
+
+SocketTransport.on('simulation:movement', function(data) {
+  console.log(data);
+  MOTION[data.direction] = data.active;
+});
+
+SocketTransport.on('REFRESH', function(data) {
+  window.location.reload();
 });
 
 function setOrientationControls(e) {
@@ -57,6 +73,8 @@ function init() {
   camera = new THREE.PerspectiveCamera(90, 1, 0.001, 700);
   camera.position.set(0, 10, 0);
   scene.add(camera);
+
+  console.log('CAMERA', camera);
 
   controls = new THREE.OrbitControls(camera, element);
   controls.rotateUp(Math.PI / 4);
@@ -104,9 +122,19 @@ function init() {
     map: hudIconTexture
   });
   hudIconMesh = new THREE.Mesh(hudIconGeo, hudIconMaterial);
-  hudIconMesh.position.set(-4, -2, -6);
+  hudIconMesh.position.set(-3, -1, -7);
 
   hudGroup.add(hudIconMesh);
+
+  var hudLower = ElementFactory.VisorHUDLower();
+  hudLower.position.set(0, -3, -6);
+  hudLower.material.opacity = 0.5;
+  hudGroup.add(hudLower);
+
+  var hudUpper = ElementFactory.VisorHUDUpper();
+  hudUpper.position.set(0, 3, -6);
+  hudUpper.material.opacity = 0.5;
+  hudGroup.add(hudUpper);
 
   scene.add(hudGroup);
   hudGroup.position.copy(camera.position);
@@ -131,10 +159,28 @@ function resize() {
 var SOCKET_UPDATE_TIME = 50;
 var _lt, _ct;
 var _lt = Date.now();
+
+
+var MOTION_SPEED = 0.08;
+
 function update(dt) {
   resize();
 
-  camera.position.set(Math.sin(Date.now() * 0.0005) * 5, 10, Math.sin(Date.now() * 0.001) * 5);
+  //camera.position.set(Math.sin(Date.now() * 0.0005) * 5, 10, Math.sin(Date.now() * 0.001) * 5);
+  camera.position.y = 10;
+  /*var dir = camera.getWorldDirection();*/
+  if (MOTION.fwd) {
+    camera.translateZ( -MOTION_SPEED );
+  } else if (MOTION.back) {
+    camera.translateZ( MOTION_SPEED );
+  }
+
+  if (MOTION.left) {
+    camera.translateX( -MOTION_SPEED );
+  } else if (MOTION.right) {
+    camera.translateX( MOTION_SPEED );
+  }
+
   rotsphere.position.copy(camera.position);
   rotsphere.position.y = camera.position.y - 25;
 
@@ -151,7 +197,7 @@ function update(dt) {
   _ct = Date.now();
   if (_ct - _lt > SOCKET_UPDATE_TIME) {
     SocketTransport.send('visor:rotation', {
-      angle: radToDeg(camera.rotation.y)
+      angle: radToDeg(-camera.rotation.y)
     });
     _lt = _ct;
   }
