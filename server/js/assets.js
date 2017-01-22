@@ -15,7 +15,8 @@ var assets = {
     // ui, scenes and images are standard image files.
     // Format is [key, path, width, height]
     ui: [
-        ['logo', 'assets/logo.png', 589, 329]
+        ['logo', 'assets/logo.png', 589, 329],
+        ['ui-overlay', '/assets/ui-overlay.png', 800, 500]
     ],
     // Format is [key, path, width, height]
     images: [

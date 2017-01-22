@@ -9,7 +9,9 @@ var CONFIG = require('./config');
 var States = {
     'Startup': require('./states/startup'),
     'Title': require('./states/title'),
-    'Play': require('./states/play')
+    'Play': require('./states/play'),
+    'Death': require('./states/death'),
+    'Win': require('./states/win')
 };
 
 //window.PhaserGlobal = window.PhaserGlobal || {};
