@@ -17,6 +17,7 @@ var Map = function( width, height, roomsize ) {
     this.yRange = height / roomsize;
     this.rooms = [];
     this.hasExit = false;
+    this.startRoom;
     
     this.initRooms();
     this.initPath();
@@ -57,6 +58,7 @@ Map.prototype.initPath = function() {
     var theMap = this;
     path.push(this.rooms[Util.randomInt(this.yRange)]);
     path[0].isStart = true;
+    theMap.startRoom = path[0];
     
     var generatePath = function() {
         var direction = ( Util.randomInt(2) ) ? 'N' : 'S';
@@ -109,6 +111,7 @@ Map.prototype.initPath = function() {
                 // Only one exit per map!
                 if ( !theMap.hasExit ) {
                     theMap.rooms[lastRoomId].hasExit = true;
+                    theMap.rooms[lastRoomId].setDoorway('E');
                     theMap.hasExit = true;
                 }
             }
@@ -139,6 +142,12 @@ Map.prototype.initPath = function() {
             }
         }
         backtrack = path.pop();
+    }
+    
+    // More efficient way of doing this? Could do while backtracking, but then
+    //  we miss any rooms not connected :S
+    for ( var r = 0, ln = theMap.rooms.length; r < ln; r++ ) {
+        theMap.rooms[r].generateRoom();
     }
 };
 

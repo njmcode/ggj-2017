@@ -36,6 +36,8 @@ var CONFIG = {
     },
 
     settings: {
+        roomSize: 8,    // Room size in tiles
+        tileSize: 32    // Tile size in pixels
     }
 };
 

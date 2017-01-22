@@ -63,11 +63,27 @@ SocketTransport.open({
 $('#dpad button').on('mousedown', function() {
     var dir = $(this).attr('data-dir');
     console.log('Button down:', dir);
+    SocketTransport.send('visor:controls', {
+        direction: dir,
+        active: true
+    });
 });
 
 $('#dpad button').on('mouseup', function() {
     var dir = $(this).attr('data-dir');
     console.log('Button up:', dir);
+
+    SocketTransport.send('visor:controls', {
+        direction: dir,
+        active: false
+    });
+});
+
+$('#rot-range').on('input', function() {
+    var ang = $(this).val();
+    SocketTransport.send('visor:rotation', {
+        angle: ang
+    });
 });
 </script>
 </body>
