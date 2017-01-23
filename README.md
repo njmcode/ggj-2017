@@ -24,7 +24,7 @@ There are two main components to the game: *Visor* and *Screen*.
 
 Once `make run` has finished:
 
- * *Visor* will be available from 'localhost:8000`.
+ * *Visor* will be available from `localhost:8000`.
  * *Screen* will be available from `localhost:5005`.
 
 `nodemon` is used to watch any changes in the `js` directory and rebuild/restart
@@ -38,5 +38,13 @@ the Node server accordingly.
  * Load *Visor* on a VR-equipped web device (e.g. Chrome Android w/Google Cardboard).
  * *Screen* will detect when *Visor* has connected and automatically start the game.
 
+## Post-jam TODOS
 
+ * Clean up code and convert to ES6
+ * Improve Docker container infrastructure / server setup
+ * Improved UX and robustness for game startup (options, connection prompts, gamepad, QR codes etc)
+ * Server-side game state (room/lobby handling)
+ * Improved visuals, narrative, audio etc
+ * Improved map generation and exploration options
+ * Additional mechanics - echolocation, sentient enemies, puzzles, timed hazards, objectives etc
 
