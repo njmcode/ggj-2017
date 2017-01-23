@@ -1,6 +1,8 @@
-# ggj-2017
-Repo for Global Game Jam 2017.
+# 'Fathom' - Global Game Jam 2017
 
+Repo for Global Game Jam 2017 ('Waves').
+
+http://globalgamejam.org/2017/games/fathom
 
 ## Requirements
 
