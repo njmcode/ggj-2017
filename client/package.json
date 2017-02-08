@@ -1,22 +1,26 @@
 {
-    "name": "-client",
+    "name": "fathom-client",
     "version": "0.0.1",
-    "description": "",
-    "main": "main.js",
-    "dependencies": {
-        "express": "^4.14.0",
-        "nodemon": "^1.11.0",
-        "socket.io": "^1.7.2",
-        "webpack": "^1.14.0"
-    },
+    "description": "Web clients ('visor' and 'monitor') for Fathom.",
+    "main": "",
     "scripts": {
-        "build": "webpack -d",
-        "server": "nodemon --watch js --ignore *.bundle.js --exec \"npm run build && node main.js\"",
-        "watch": "webpack -d -w --progress --colors"
+        "start": "npm run build",
+        "distfiles:visor": "copyfiles './visor/assets/**/*.*' './visor/html/**/*.*' /static",
+        "distfiles:monitor": "copyfiles './monitor/assets/**/*.*' './monitor/html/**/*.*' /static",
+        "distfiles:shared": "copyfiles './shared/**/*.*' /static",
+        "distfiles": "npm run distfiles:visor && npm run distfiles:monitor && npm run distfiles:shared",
+        "build": "webpack -d && npm run distfiles",
+        "watch": "nodemon --watch monitor visor shared --exec \"npm run build\""
     },
     "license": "MIT",
     "devDependencies": {
+        "copyfiles": "latest",
         "webpack": "^1.14.0",
-        "webpack-dev-server": "^1.16.2"
-    }
+        "webpack-dev-server": "^1.16.2",
+        "script-loader": "^0.7.0",
+        "nodemon": "^1.11.0",
+        "socket.io": "^1.7.2"
+    },
+    "author": "njmcode",
+    "license": "MIT"
 }

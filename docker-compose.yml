@@ -1,18 +1,21 @@
-visor:
+# Express server for visor and monitor clients
+client:
     image: node:7
     volumes:
         - ./client:/src
-        - ./shared:/shared
+        - ./client/shared:/shared
+        - ./static:/static
     ports:
-        - 0.0.0.0:8000:8000
+        - 0.0.0.0:8001:8001
     working_dir: /src
     command: make run
 
-screen:
+# Node socket server for comms and game state
+server:
     image: node:7
     volumes:
         - ./server:/src
-        - ./shared:/shared
+        - ./static:/static
     ports:
         - 0.0.0.0:5005:5005
     working_dir: /src
