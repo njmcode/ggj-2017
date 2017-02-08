@@ -17,34 +17,40 @@ All internal dependencies will be installed.
 
 ## Infrastructure
 
-There are two main components to the game: *Visor* and *Screen*.
+Two Docker containers are created by `make run`:
 
- * *Visor* is the view seen by the player wearing the VR headset.
- * *Screen* is the view seen by the player(s) issuing guidance and instructions.
+ * `client` encapsulates the dev environment for both the 'Visor' and the 'Monitor' (see below), including build tools and source code.
+ * `server` encapsulates the runtime game server including HTML, static assets and websockets.
 
-Once `make run` has finished:
+When the Docker environment is running, the `/static` directory is also mounted as a volume for both the client and the server. The build tools for `client` will output JS payloads, assets and HTML templates to the `/static` directory (see `/client/package.json` and `/client/webpack.config.js`).
 
- * *Visor* will be available from `localhost:8000`.
- * *Screen* will be available from `localhost:5005`.
+There are two main components to the game: **Visor** and **Monitor**.
+
+ * **Visor** is the view seen by the player exploring the environment (and wearing a VR headset).
+ * **Monitor** is the view seen by the player(s) issuing guidance and instructions.
+
+The default port is 5005. Once `make run` has finished:
+
+ * **Monitor** will be available from `localhost:5005` (connect to this *first*).
+ * **Visor** will be available from `localhost:5005/visor`, leading to `/play`.
 
 `nodemon` is used to watch any changes in the `js` directory and rebuild/restart
-the Node server accordingly.
+the Node server and dev tools accordingly (_TODO: this is currently broken, fix it_).
 
-## Playing/testing the game
+## Playing/testing the game locally
 
- * Load *Screen* on a large monitor. It will automatically start the game once
-   *Visor* has connected.
- * Proxy *Visor* through `ngrok` or another tunnelling service.
- * Load *Visor* on a VR-equipped web device (e.g. Chrome Android w/Google Cardboard).
- * *Screen* will detect when *Visor* has connected and automatically start the game.
+ * Load **Monitor** on a laptop or desktop. It will automatically start the game once **Visor** has connected.
+ * Proxy the app through `ngrok` or another tunnelling service.
+ * Load **Visor** on a VR-equipped web device (e.g. Chrome Android w/Google Cardboard).
+ * **Monitor** will detect when **Visor** has connected and automatically start the game.
+ * Use the arrow keys or a gamepad (experimental) _on the **Monitor**_ to move the player. Mouse-drag the **Visor** view or physically turn the VR device to change orientation.
 
 ## Post-jam TODOS
 
  * Clean up code and convert to ES6
- * Improve Docker container infrastructure / server setup
  * Improved UX and robustness for game startup (options, connection prompts, gamepad, QR codes etc)
  * Server-side game state (room/lobby handling)
  * Improved visuals, narrative, audio etc
  * Improved map generation and exploration options
  * Additional mechanics - echolocation, sentient enemies, puzzles, timed hazards, objectives etc
-
+ * _[DONE]_ Improve Docker container infrastructure / server setup
