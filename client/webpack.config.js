@@ -4,10 +4,11 @@ var webpack = require('webpack');
 
 module.exports = {
     entry: {
-        'boot': './js/boot.js'
+        'monitor': './monitor/js/index.js',
+        'visor': './visor/js/index.js'
     },
     output: {
-        path: './js/',
+        path: '/static/dist',
         filename: '[name].bundle.js'
     }
 };
